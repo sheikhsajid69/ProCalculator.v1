@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Calculator</title>
+    <link rel="shortcut icon" href="https://cdn2.iconfinder.com/data/icons/ios7-inspired-mac-icon-set/512/Calculator_512.png" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.5.0/math.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #f2f2f7;
+            --calculator-bg: #ffffff;
+            --key-bg: #f5f5f5;
+            --key-hover: #e5e5e5;
+            --text-color: #333;
+            --key-text: #333;
+            --function-key: #ff9500;
+            --function-key-text: white;
+            --screen-bg: #f9f9f9;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --section-bg: #f8f8f8;
+            --tab-bg: #e5e5e5;
+            --error-color: #ff3b30;
+            --header-bg: linear-gradient(135deg, #ff9500 0%, #ff5e3a 100%);
+            --footer-bg: #2c2c2e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+         background-color: #e5e5f7;
+  opacity: 1;
+  width: 100%;
+  height: 100%;
+  background-image: repeating-radial-gradient(
+      circle at 0 0,
+      transparent 0,
+      #e5e5f7 30px
+    ),
+    repeating-linear-gradient(#ffb5b58a, #ffb8b8);
+            background-color: var(--background);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--header-bg);
+            color: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
+            position: relative;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            background-image: url('https://cdn2.iconfinder.com/data/icons/ios7-inspired-mac-icon-set/512/Calculator_512.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .calculator-container {
+            width: 100%;
+            max-width: 450px;
+            background-color: var(--calculator-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            margin: 0 auto;
+            flex-grow: 1;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            background-color: var(--tab-bg);
+        }
+
+        .tab {
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            font-size: 12px;
+            text-align: center;
+            flex-grow: 1;
+            min-width: 60px;
+        }
+
+        .tab.active {
+            background-color: var(--calculator-bg);
+            border-bottom: 2px solid var(--function-key);
+        }
+
+        .tab:hover:not(.active) {
+            background-color: var(--key-hover);
+        }
+
+        .calculator-section {
+            display: none;
+            padding: 15px;
+        }
+
+        .calculator-section.active {
+            display: block;
+        }
+
+        .screen {
+            width: 100%;
+            background-color: var(--screen-bg);
+            padding: 15px;
+            text-align: right;
+            color: var(--text-color);
+        }
+
+        .input-field {
+            width: 100%;
+            height: 40px;
+            font-size: 20px;
+            border: none;
+            background-color: transparent;
+            text-align: right;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            outline: none;
+        }
+
+        .result-field {
+            font-size: 28px;
+            min-height: 36px;
+            word-wrap: break-word;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .key {
+            background-color: var(--key-bg);
+            border: none;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: var(--key-text);
+            font-size: 20px;
+            transition: background-color 0.2s;
+        }
+
+        .key:hover {
+            background-color: var(--key-hover);
+        }
+
+        .function-key {
+            background-color: var(--function-key);
+            color: var(--function-key-text);
+        }
+
+        .function-key:hover {
+            background-color: #e08500;
+        }
+
+        .double {
+            grid-column: span 2;
+        }
+
+        .help-panel {
+            padding: 10px;
+            background-color: var(--screen-bg);
+            display: none;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 13px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .help-panel.show {
+            display: block;
+        }
+
+        .help-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .help-example {
+            margin-bottom: 8px;
+        }
+
+        .history-container {
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 10px;
+            display: none;
+            background-color: var(--screen-bg);
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .history-container.show {
+            display: block;
+        }
+
+        .history-item {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .history-item:hover {
+            background-color: var(--key-hover);
+        }
+
+        .error {
+            color: var(--error-color);
+            font-size: 14px;
+        }
+
+        .section {
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--function-key);
+        }
+
+        .section-input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .section-button {
+            width: 100%;
+            padding: 8px;
+            background-color: var(--function-key);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .section-button:hover {
+            background-color: #e08500;
+        }
+
+        .section-result {
+            margin-top: 8px;
+            font-size: 14px;
+            min-height: 20px;
+            word-break: break-word;
+        }
+
+        select.section-input {
+            height: 35px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .calculator-container {
+                max-width: 100%;
+            }
+            
+            .key {
+                height: 50px;
+                font-size: 18px;
+            }
+            
+            .input-field {
+                font-size: 18px;
+                height: 35px;
+            }
+            
+            .result-field {
+                font-size: 24px;
+            }
+            
+            .tab {
+                padding: 8px;
+                font-size: 11px;
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .social-links a {
+                width: 28px;
+                height: 28px;
+            }
+        }
+        footer {
+    width: 100%;
+    background: var(--footer-bg);
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+}
+
+footer img{
+    width: 20px;
+}
+
+.social-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 0 20px;
+}
+
+.social-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
+.created-by {
+    font-size: clamp(12px, 2vw, 16px);
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    white-space: nowrap;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(28px, 4vw, 32px);
+    height: clamp(28px, 4vw, 32px);
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-links a i {
+    font-size: clamp(18px, 3vw, 22px);
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.social-links a:hover {
+    color: var(--function-key); /* Matches your orange theme */
+    transform: scale(1.2);
+}
+
+@media (max-width: 480px) {
+    footer {
+        padding: 8px 0;
+    }
+    
+    .social-links {
+        gap: 10px;
+        padding: 0 10px;
+    }
+    
+    .created-by {
+        font-size: clamp(10px, 1.5vw, 14px);
+    }
+    
+    .social-links a {
+        width: clamp(24px, 3.5vw, 28px);
+        height: clamp(24px, 3.5vw, 28px);
+    }
+    
+    .social-links a i {
+        font-size: clamp(16px, 2.5vw, 20px);
+    }
+}
+
+@media (max-width: 360px) {
+    .social-links {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .created-by {
+        margin-bottom: 5px;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="header animate__animated animate__fadeInDown">
+        <div class="logo"></div>
+        <h1>ProCalculator</h1>
+    </div>
+
+    <div class="calculator-container">
+        <div class="tabs">
+            <div class="tab active" data-tab="basic">Basic</div>
+            <div class="tab" data-tab="scientific">Scientific</div>
+            <div class="tab" data-tab="calculus">Calculus</div>
+            <div class="tab" data-tab="finance">Finance</div>
+            <div class="tab" data-tab="unit">Unit</div>
+            <div class="tab" data-tab="converter">Converters</div>
+        </div>
+
+        <!-- Basic Calculator -->
+        <div class="calculator-section active" id="basic-section">
+            <div class="screen">
+                <input type="text" class="input-field" id="input" placeholder="Enter expression..." autocomplete="off">
+                <div class="result-field" id="result"></div>
+            </div>
+
+            <div class="help-panel">
+                <div class="help-title">Basic Calculator Examples:</div>
+                <div class="help-example">• 2 + 2 * 5 = 12</div>
+                <div class="help-example">• (3 + 4) * 2 = 14</div>
+                <div class="help-example">• 10 / (2 + 3) = 2</div>
+            </div>
+
+            <div class="history-container">
+                <div class="history-list"></div>
+            </div>
+
+            <div class="buttons">
+                <button class="key" onclick="clearInput('basic')">C</button>
+                <button class="key" onclick="appendToInput('basic', '(')">(</button>
+                <button class="key" onclick="appendToInput('basic', ')')">)</button>
+                <button class="key function-key" onclick="appendToInput('basic', '/')">/</button>
+                
+                <button class="key" onclick="appendToInput('basic', '7')">7</button>
+                <button class="key" onclick="appendToInput('basic', '8')">8</button>
+                <button class="key" onclick="appendToInput('basic', '9')">9</button>
+                <button class="key function-key" onclick="appendToInput('basic', '*')">×</button>
+                
+                <button class="key" onclick="appendToInput('basic', '4')">4</button>
+                <button class="key" onclick="appendToInput('basic', '5')">5</button>
+                <button class="key" onclick="appendToInput('basic', '6')">6</button>
+                <button class="key function-key" onclick="appendToInput('basic', '-')">-</button>
+                
+                <button class="key" onclick="appendToInput('basic', '1')">1</button>
+                <button class="key" onclick="appendToInput('basic', '2')">2</button>
+                <button class="key" onclick="appendToInput('basic', '3')">3</button>
+                <button class="key function-key" onclick="appendToInput('basic', '+')">+</button>
+                
+                <button class="key" onclick="appendToInput('basic', '0')">0</button>
+                <button class="key" onclick="appendToInput('basic', '.')">.</button>
+                <button class="key" onclick="toggleHistory('basic')">↺</button>
+                <button class="key function-key" onclick="calculate('basic')">=</button>
+            </div>
+        </div>
+
+        <!-- Scientific Calculator -->
+        <div class="calculator-section" id="scientific-section">
+            <div class="screen">
+                <input type="text" class="input-field" id="sci-input" placeholder="Enter expression..." autocomplete="off">
+                <div class="result-field" id="sci-result"></div>
+            </div>
+
+            <div class="help-panel">
+                <div class="help-title">Scientific Calculator Examples:</div>
+                <div class="help-example">• sin(45 deg) = 0.707</div>
+                <div class="help-example">• log(100) = 2</div>
+                <div class="help-example">• 2^3 = 8</div>
+                <div class="help-example">• sqrt(9) = 3</div>
+            </div>
+
+            <div class="buttons">
+                <button class="key" onclick="clearInput('scientific')">C</button>
+                <button class="key" onclick="appendToInput('scientific', 'pi')">π</button>
+                <button class="key" onclick="appendToInput('scientific', 'e')">e</button>
+                <button class="key function-key" onclick="calculate('scientific')">=</button>
+                
+                <button class="key" onclick="appendToInput('scientific', 'sin(')">sin</button>
+                <button class="key" onclick="appendToInput('scientific', 'cos(')">cos</button>
+                <button class="key" onclick="appendToInput('scientific', 'tan(')">tan</button>
+                <button class="key function-key" onclick="appendToInput('scientific', '/')">/</button>
+                
+                <button class="key" onclick="appendToInput('scientific', 'asin(')">sin⁻¹</button>
+                <button class="key" onclick="appendToInput('scientific', 'acos(')">cos⁻¹</button>
+                <button class="key" onclick="appendToInput('scientific', 'atan(')">tan⁻¹</button>
+                <button class="key function-key" onclick="appendToInput('scientific', '*')">×</button>
+                
+                <button class="key" onclick="appendToInput('scientific', 'sqrt(')">√</button>
+                <button class="key" onclick="appendToInput('scientific', '^2')">x²</button>
+                <button class="key" onclick="appendToInput('scientific', '^')">x^y</button>
+                <button class="key function-key" onclick="appendToInput('scientific', '-')">-</button>
+                
+                <button class="key" onclick="appendToInput('scientific', 'log(')">log</button>
+                <button class="key" onclick="appendToInput('scientific', 'ln(')">ln</button>
+                <button class="key" onclick="appendToInput('scientific', 'abs(')">|x|</button>
+                <button class="key function-key" onclick="appendToInput('scientific', '+')">+</button>
+                
+                <button class="key" onclick="appendToInput('scientific', '(')">(</button>
+                <button class="key" onclick="appendToInput('scientific', ')')">)</button>
+                <button class="key" onclick="toggleHelp()">?</button>
+                <button class="key" onclick="toggleHistory('scientific')">↺</button>
+            </div>
+        </div>
+
+        <!-- Calculus Calculator -->
+        <div class="calculator-section" id="calculus-section">
+            <div class="screen">
+                <input type="text" class="input-field" id="calc-input" placeholder="Enter expression..." autocomplete="off">
+                <div class="result-field" id="calc-result"></div>
+            </div>
+
+            <div class="help-panel">
+                <div class="help-title">Calculus Calculator Examples:</div>
+                <div class="help-example">• derivative('x^2', 'x') = 2*x</div>
+                <div class="help-example">• integrate('x^2', 'x') = 1/3*x^3</div>
+                <div class="help-example">• solve('x^2 - 4 = 0', 'x') = [-2, 2]</div>
+            </div>
+
+            <div class="buttons">
+                <button class="key" onclick="clearInput('calculus')">C</button>
+                <button class="key" onclick="appendToInput('calculus', 'derivative(')">d/dx</button>
+                <button class="key" onclick="appendToInput('calculus', 'integrate(')">∫</button>
+                <button class="key function-key" onclick="calculate('calculus')">=</button>
+                
+                <button class="key" onclick="appendToInput('calculus', 'solve(')">solve</button>
+                <button class="key" onclick="appendToInput('calculus', 'limit(')">limit</button>
+                <button class="key" onclick="appendToInput('calculus', '(')">(</button>
+                <button class="key" onclick="appendToInput('calculus', ')')">)</button>
+                
+                <button class="key" onclick="appendToInput('calculus', '7')">7</button>
+                <button class="key" onclick="appendToInput('calculus', '8')">8</button>
+                <button class="key" onclick="appendToInput('calculus', '9')">9</button>
+                <button class="key function-key" onclick="appendToInput('calculus', '*')">×</button>
+                
+                <button class="key" onclick="appendToInput('calculus', '4')">4</button>
+                <button class="key" onclick="appendToInput('calculus', '5')">5</button>
+                <button class="key" onclick="appendToInput('calculus', '6')">6</button>
+                <button class="key function-key" onclick="appendToInput('calculus', '-')">-</button>
+                
+                <button class="key" onclick="appendToInput('calculus', '1')">1</button>
+                <button class="key" onclick="appendToInput('calculus', '2')">2</button>
+                <button class="key" onclick="appendToInput('calculus', '3')">3</button>
+                <button class="key function-key" onclick="appendToInput('calculus', '+')">+</button>
+                
+                <button class="key" onclick="appendToInput('calculus', 'x')">x</button>
+                <button class="key" onclick="appendToInput('calculus', '0')">0</button>
+                <button class="key" onclick="appendToInput('calculus', ',')">,</button>
+                <button class="key function-key" onclick="appendToInput('calculus', '/')">/</button>
+            </div>
+        </div>
+
+        <!-- Finance Calculator -->
+        <div class="calculator-section" id="finance-section">
+            <div class="section">
+                <div class="section-title">EMI Calculator</div>
+                <input type="number" class="section-input" id="emi-principal" placeholder="Loan amount ($)">
+                <input type="number" class="section-input" id="emi-rate" placeholder="Interest rate (%)">
+                <input type="number" class="section-input" id="emi-term" placeholder="Term (months)">
+                <button class="section-button" onclick="calculateEMI()">Calculate EMI</button>
+                <div class="section-result" id="emi-result"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Loan Calculator</div>
+                <input type="number" class="section-input" id="loan-amount" placeholder="Loan amount ($)">
+                <input type="number" class="section-input" id="interest-rate" placeholder="Interest rate (%)">
+                <input type="number" class="section-input" id="loan-term" placeholder="Term (years)">
+                <button class="section-button" onclick="calculateLoan()">Calculate</button>
+                <div class="section-result" id="loan-result"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Discount Calculator</div>
+                <input type="number" class="section-input" id="original-price" placeholder="Original price">
+                <input type="number" class="section-input" id="discount-percent" placeholder="Discount %">
+                <button class="section-button" onclick="calculateDiscount()">Calculate</button>
+                <div class="section-result" id="discount-result"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">GPA Calculator</div>
+                <input type="number" class="section-input" id="gpa-grade" placeholder="Grade (0-100)">
+                <button class="section-button" onclick="calculateGPA()">Calculate GPA</button>
+                <div class="section-result" id="gpa-result"></div>
+            </div>
+        </div>
+
+        <!-- Unit Calculator -->
+        <div class="calculator-section" id="unit-section">
+            <div class="section">
+                <div class="section-title">Length Converter</div>
+                <input type="number" class="section-input" id="length-value" placeholder="Value" value="1">
+                <select class="section-input" id="length-from">
+                    <option value="mm">Millimeter (mm)</option>
+                    <option value="cm">Centimeter (cm)</option>
+                    <option value="m">Meter (m)</option>
+                    <option value="km">Kilometer (km)</option>
+                    <option value="in">Inch (in)</option>
+                    <option value="ft">Foot (ft)</option>
+                    <option value="yd">Yard (yd)</option>
+                    <option value="mi">Mile (mi)</option>
+                </select>
+                <span>to</span>
+                <select class="section-input" id="length-to">
+                    <option value="cm">Centimeter (cm)</option>
+                    <option value="mm">Millimeter (mm)</option>
+                    <option value="m">Meter (m)</option>
+                    <option value="km">Kilometer (km)</option>
+                    <option value="in">Inch (in)</option>
+                    <option value="ft">Foot (ft)</option>
+                    <option value="yd">Yard (yd)</option>
+                    <option value="mi">Mile (mi)</option>
+                </select>
+                <button class="section-button" onclick="convertLength()">Convert</button>
+                <div class="section-result" id="length-result"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Weight Converter</div>
+                <input type="number" class="section-input" id="weight-value" placeholder="Value" value="1">
+                <select class="section-input" id="weight-from">
+                    <option value="mg">Milligram (mg)</option>
+                    <option value="g">Gram (g)</option>
+                    <option value="kg">Kilogram (kg)</option>
+                    <option value="t">Metric Ton (t)</option>
+                    <option value="oz">Ounce (oz)</option>
+                    <option value="lb">Pound (lb)</option>
+                </select>
+                <span>to</span>
+                <select class="section-input" id="weight-to">
+                    <option value="g">Gram (g)</option>
+                    <option value="mg">Milligram (mg)</option>
+                    <option value="kg">Kilogram (kg)</option>
+                    <option value="t">Metric Ton (t)</option>
+                    <option value="oz">Ounce (oz)</option>
+                    <option value="lb">Pound (lb)</option>
+                </select>
+                <button class="section-button" onclick="convertWeight()">Convert</button>
+                <div class="section-result" id="weight-result"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Temperature Converter</div>
+                <input type="number" class="section-input" id="temp-value" placeholder="Value" value="0">
+                <select class="section-input" id="temp-from">
+                    <option value="c">Celsius (°C)</option>
+                    <option value="f">Fahrenheit (°F)</option>
+                    <option value="k">Kelvin (K)</option>
+                </select>
+                <span>to</span>
+                <select class="section-input" id="temp-to">
+                    <option value="f">Fahrenheit (°F)</option>
+                    <option value="c">Celsius (°C)</option>
+                    <option value="k">Kelvin (K)</option>
+                </select>
+                <button class="section-button" onclick="convertTemperature()">Convert</button>
+                <div class="section-result" id="temp-result"></div>
+            </div>
+        </div>
+
+        <!-- Converter Calculator -->
+        <div class="calculator-section" id="converter-section">
+            <div class="section">
+                <div class="section-title">Number Base Converter</div>
+                <input type="text" class="section-input" id="number-value" placeholder="Value" value="10">
+                <select class="section-input" id="number-from">
+                    <option value="2">Binary (2)</option>
+                    <option value="8">Octal (8)</option>
+                    <option value="10" selected>Decimal (10)</option>
+                    <option value="16">Hexadecimal (16)</option>
+                </select>
+                <span>to</span>
+                <select class="section-input" id="number-to">
+                    <option value="2">Binary (2)</option>
+                    <option value="8">Octal (8)</option>
+                    <option value="10">Decimal (10)</option>
+                    <option value="16" selected>Hexadecimal (16)</option>
+                </select>
+                <button class="section-button" onclick="convertNumberBase()">Convert</button>
+                <div class="section-result" id="number-result"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Time Calculator</div>
+                <div class="two-column">
+                    <div>
+                        <input type="number" class="section-input" id="time-value1" placeholder="Value" value="1">
+                        <select class="section-input" id="time-unit1">
+                            <option value="sec">Seconds</option>
+                            <option value="min">Minutes</option>
+                            <option value="hr">Hours</option>
+                            <option value="day">Days</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="number" class="section-input" id="time-value2" placeholder="Value" value="30">
+                        <select class="section-input" id="time-unit2">
+                            <option value="min">Minutes</option>
+                            <option value="sec">Seconds</option>
+                            <option value="hr">Hours</option>
+                            <option value="day">Days</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="section-button" onclick="addTime()">Add Times</button>
+                <div class="section-result" id="time-result"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Binary Operations</div>
+                <input type="text" class="section-input" id="binary1" placeholder="First binary">
+                <input type="text" class="section-input" id="binary2" placeholder="Second binary">
+                <select class="section-input" id="binary-op">
+                    <option value="and">AND</option>
+                    <option value="or">OR</option>
+                    <option value="xor">XOR</option>
+                    <option value="add">Add</option>
+                </select>
+                <button class="section-button" onclick="binaryOperation()">Calculate</button>
+                <div class="section-result" id="binary-result"></div>
+            </div>
+        </div>
+    </div><br><br><br><br>
+
+    <!-- Replace your existing social-links div with this -->
+<footer>
+        <div class="social-links animate__animated animate__slideInUp">
+            <span class="created-by">Developed by S4JID | Find me</span>
+            <a href="https://x.com/SheikhSajid69" target="_blank" title="X">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg" alt="X Logo">
+            </a>
+            <a href="https://github.com/sheikhsajid69" target="_blank" title="GitHub">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub Logo" style="background-color: #fff; border-radius: 50%;">
+            </a>
+            <a href="https://linkedin.com/in/sheikh-sajid-m" target="_blank" title="LinkedIn">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn Logo">
+            </a>
+            <a href="https://medium.com/@sheikhsajid69.com" target="_blank" title="Medium">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Medium_logo_Monogram.svg" alt="Medium Logo">
+            </a>
+            <a href="mailto:sajidms1209@icloud.com" title="Mail">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Mail_%28iOS%29.svg" alt="Mail Logo">
+            </a>
+            <a href="https://open.spotify.com/user/316v53vlmm3zfjxoubogax3rwkom?si=507800f1184a4bea" target="_blank" title="Spotify">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify Logo">
+            </a>
+            <a href="https://topmate.io/sheikhsajid69" target="_blank" title="Topmate">
+                <img src="https://topmate.io/favicon.ico" alt="Topmate Logo" style="border-radius: 50%;">
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // Exchange rates (simplified - in a real app you'd fetch these from an API)
+        const exchangeRates = {
+            USD: { EUR: 0.93, GBP: 0.79, JPY: 151.36, CAD: 1.37, AUD: 1.52, CNY: 7.24, INR: 83.29 },
+            EUR: { USD: 1.08, GBP: 0.85, JPY: 163.28, CAD: 1.47, AUD: 1.64, CNY: 7.81, INR: 89.82 },
+            GBP: { USD: 1.27, EUR: 1.18, JPY: 192.42, CAD: 1.73, AUD: 1.93, CNY: 9.20, INR: 105.82 },
+            JPY: { USD: 0.0066, EUR: 0.0061, GBP: 0.0052, CAD: 0.0090, AUD: 0.010, CNY: 0.048, INR: 0.55 },
+            CAD: { USD: 0.73, EUR: 0.68, GBP: 0.58, JPY: 110.84, AUD: 1.11, CNY: 5.29, INR: 60.86 },
+            AUD: { USD: 0.66, EUR: 0.61, GBP: 0.52, JPY: 99.68, CAD: 0.90, CNY: 4.76, INR: 54.78 },
+            CNY: { USD: 0.14, EUR: 0.13, GBP: 0.11, JPY: 20.91, CAD: 0.19, AUD: 0.21, INR: 11.51 },
+            INR: { USD: 0.012, EUR: 0.011, GBP: 0.0094, JPY: 1.82, CAD: 0.016, AUD: 0.018, CNY: 0.087 }
+        };
+
+        // Conversion factors
+        const lengthConversions = {
+            mm: { cm: 0.1, m: 0.001, km: 0.000001, in: 0.0393701, ft: 0.00328084, yd: 0.00109361, mi: 0.000000621371 },
+            cm: { mm: 10, m: 0.01, km: 0.00001, in: 0.393701, ft: 0.0328084, yd: 0.0109361, mi: 0.00000621371 },
+            m: { mm: 1000, cm: 100, km: 0.001, in: 39.3701, ft: 3.28084, yd: 1.09361, mi: 0.000621371 },
+            km: { mm: 1000000, cm: 100000, m: 1000, in: 39370.1, ft: 3280.84, yd: 1093.61, mi: 0.621371 },
+            in: { mm: 25.4, cm: 2.54, m: 0.0254, km: 0.0000254, ft: 0.0833333, yd: 0.0277778, mi: 0.0000157828 },
+            ft: { mm: 304.8, cm: 30.48, m: 0.3048, km: 0.0003048, in: 12, yd: 0.333333, mi: 0.000189394 },
+            yd: { mm: 914.4, cm: 91.44, m: 0.9144, km: 0.0009144, in: 36, ft: 3, mi: 0.000568182 },
+            mi: { mm: 1609344, cm: 160934.4, m: 1609.344, km: 1.609344, in: 63360, ft: 5280, yd: 1760 }
+        };
+
+        const weightConversions = {
+            mg: { g: 0.001, kg: 0.000001, t: 0.000000001, oz: 0.000035274, lb: 0.00000220462 },
+            g: { mg: 1000, kg: 0.001, t: 0.000001, oz: 0.035274, lb: 0.00220462 },
+            kg: { mg: 1000000, g: 1000, t: 0.001, oz: 35.274, lb: 2.20462 },
+            t: { mg: 1000000000, g: 1000000, kg: 1000, oz: 35274, lb: 2204.62 },
+            oz: { mg: 28349.5, g: 28.3495, kg: 0.0283495, t: 0.0000283495, lb: 0.0625 },
+            lb: { mg: 453592, g: 453.592, kg: 0.453592, t: 0.000453592, oz: 16 }
+        };
+
+        // History data
+        const history = {
+            basic: [],
+            scientific: [],
+            calculus: []
+        };
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                document.querySelectorAll('.calculator-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                document.getElementById(`${tab.dataset.tab}-section`).classList.add('active');
+                
+                // Focus the appropriate input field
+                const inputId = `${tab.dataset.tab === 'basic' ? '' : tab.dataset.tab + '-'}input`;
+                if (document.getElementById(inputId)) {
+                    document.getElementById(inputId).focus();
+                }
+            });
+        });
+
+        // Calculator Functions
+        function appendToInput(type, value) {
+            const inputId = `${type === 'basic' ? '' : type + '-'}input`;
+            document.getElementById(inputId).value += value;
+            document.getElementById(inputId).focus();
+        }
+
+        function clearInput(type) {
+            const inputId = `${type === 'basic' ? '' : type + '-'}input`;
+            const resultId = `${type === 'basic' ? '' : type + '-'}result`;
+            document.getElementById(inputId).value = '';
+            document.getElementById(resultId).textContent = '';
+            document.getElementById(resultId).classList.remove('error');
+            document.getElementById(inputId).focus();
+        }
+
+        function calculate(type) {
+            const inputId = `${type === 'basic' ? '' : type + '-'}input`;
+            const resultId = `${type === 'basic' ? '' : type + '-'}result`;
+            const expression = document.getElementById(inputId).value.trim();
+            
+            if (!expression) return;
+            
+            try {
+                let result;
+                
+                if (type === 'calculus') {
+                    result = handleCalculusOperations(expression);
+                } else {
+                    result = math.evaluate(expression);
+                }
+                
+                document.getElementById(resultId).textContent = result;
+                document.getElementById(resultId).classList.remove('error');
+                addToHistory(type, expression, result);
+            } catch (error) {
+                document.getElementById(resultId).textContent = 'Error: ' + (error.message || 'Invalid expression');
+                document.getElementById(resultId).classList.add('error');
+            }
+        }
+
+        function handleCalculusOperations(expression) {
+            if (expression.includes('derivative(')) {
+                const params = extractParameters(expression, 'derivative');
+                if (params.length >= 2) {
+                    const func = params[0].replace(/'/g, '').replace(/"/g, '');
+                    const variable = params[1].replace(/'/g, '').replace(/"/g, '');
+                    return math.derivative(func, variable).toString();
+                }
+            } 
+            if (expression.includes('integrate(')) {
+                const params = extractParameters(expression, 'integrate');
+                if (params.length >= 2) {
+                    const func = params[0].replace(/'/g, '').replace(/"/g, '');
+                    const variable = params[1].replace(/'/g, '').replace(/"/g, '');
+                    return math.integrate(func, variable).toString();
+                }
+            }
+            if (expression.includes('solve(') || expression.includes('limit(')) {
+                const result = math.evaluate(expression);
+                return Array.isArray(result) ? result.join(', ') : result;
+            }
+            
+            return math.evaluate(expression);
+        }
+
+        function extractParameters(expr, funcName) {
+            const start = expr.indexOf(funcName + '(') + funcName.length + 1;
+            let end = expr.length - 1;
+            let count = 1;
+            
+            for (let i = start; i < expr.length; i++) {
+                if (expr[i] === '(') count++;
+                if (expr[i] === ')') count--;
+                if (count === 0) {
+                    end = i;
+                    break;
+                }
+            }
+            
+            const paramsStr = expr.substring(start, end);
+            return paramsStr.split(',').map(p => p.trim());
+        }
+
+        // History functions
+        function addToHistory(type, expression, result) {
+            history[type].unshift({ expression, result });
+            if (history[type].length > 5) history[type].pop();
+        }
+
+        function toggleHistory(type) {
+            const historyContainer = document.querySelector('.history-container');
+            historyContainer.classList.toggle('show');
+            
+            if (historyContainer.classList.contains('show')) {
+                const historyList = document.querySelector('.history-list');
+                historyList.innerHTML = '';
+                
+                history[type].forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.classList.add('history-item');
+                    historyItem.innerHTML = `<div>${item.expression}</div><div><strong>= ${item.result}</strong></div>`;
+                    historyItem.addEventListener('click', () => {
+                        document.getElementById(`${type === 'basic' ? '' : type + '-'}input`).value = item.expression;
+                        historyContainer.classList.remove('show');
+                    });
+                    historyList.appendChild(historyItem);
+                });
+            }
+        }
+
+        function toggleHelp() {
+            document.querySelector('.help-panel').classList.toggle('show');
+        }
+
+        // Finance functions
+        function calculateEMI() {
+            const principal = parseFloat(document.getElementById('emi-principal').value);
+            const rate = parseFloat(document.getElementById('emi-rate').value);
+            const term = parseFloat(document.getElementById('emi-term').value);
+            
+            if (isNaN(principal)) return showError('emi-result', "Please enter loan amount");
+            if (isNaN(rate)) return showError('emi-result', "Please enter interest rate");
+            if (isNaN(term)) return showError('emi-result', "Please enter loan term");
+            
+            const monthlyRate = rate / 100 / 12;
+            const emi = principal * monthlyRate * Math.pow(1 + monthlyRate, term) / 
+                         (Math.pow(1 + monthlyRate, term) - 1);
+            const totalPayment = emi * term;
+            const totalInterest = totalPayment - principal;
+            
+            document.getElementById('emi-result').innerHTML = 
+                `EMI: <b>$${emi.toFixed(2)}</b><br>Total Interest: <b>$${totalInterest.toFixed(2)}</b>`;
+        }
+
+        function calculateLoan() {
+            const amount = parseFloat(document.getElementById('loan-amount').value);
+            const rate = parseFloat(document.getElementById('interest-rate').value);
+            const term = parseFloat(document.getElementById('loan-term').value);
+            
+            if (isNaN(amount)) return showError('loan-result', "Please enter loan amount");
+            if (isNaN(rate)) return showError('loan-result', "Please enter interest rate");
+            if (isNaN(term)) return showError('loan-result', "Please enter loan term");
+            
+            const monthlyRate = rate / 100 / 12;
+            const payments = term * 12;
+            const x = Math.pow(1 + monthlyRate, payments);
+            const monthlyPayment = (amount * monthlyRate * x) / (x - 1);
+            const totalInterest = (monthlyPayment * payments) - amount;
+            
+            document.getElementById('loan-result').innerHTML = 
+                `Monthly: <b>$${monthlyPayment.toFixed(2)}</b><br>Total Interest: <b>$${totalInterest.toFixed(2)}</b>`;
+        }
+
+        function calculateDiscount() {
+            const originalPrice = parseFloat(document.getElementById('original-price').value);
+            const discountPercent = parseFloat(document.getElementById('discount-percent').value);
+            
+            if (isNaN(originalPrice)) return showError('discount-result', "Please enter original price");
+            if (isNaN(discountPercent)) return showError('discount-result', "Please enter discount %");
+            
+            const discountAmount = originalPrice * (discountPercent / 100);
+            const finalPrice = originalPrice - discountAmount;
+            
+            document.getElementById('discount-result').innerHTML = 
+                `Discount: <b>$${discountAmount.toFixed(2)}</b><br>Final Price: <b>$${finalPrice.toFixed(2)}</b>`;
+        }
+
+         function calculateGPA() {
+            const grade = parseFloat(document.getElementById('gpa-grade').value);
+            
+            if (isNaN(grade)) return showError('gpa-result', "Please enter a grade");
+            if (grade < 0 || grade > 100) return showError('gpa-result', "Grade must be 0-100");
+            
+            let gpa;
+            if (grade >= 93) gpa = 4.0;
+            else if (grade >= 90) gpa = 3.7;
+            else if (grade >= 87) gpa = 3.3;
+            else if (grade >= 83) gpa = 3.0;
+            else if (grade >= 80) gpa = 2.7;
+            else if (grade >= 77) gpa = 2.3;
+            else if (grade >= 73) gpa = 2.0;
+            else if (grade >= 70) gpa = 1.7;
+            else if (grade >= 67) gpa = 1.3;
+            else if (grade >= 65) gpa = 1.0;
+            else gpa = 0.0;
+            
+            document.getElementById('gpa-result').textContent = `GPA: ${gpa.toFixed(1)}`;
+        }
+
+        // Unit Converter functions
+        function convertLength() {
+            const value = parseFloat(document.getElementById('length-value').value) || 0;
+            const fromUnit = document.getElementById('length-from').value;
+            const toUnit = document.getElementById('length-to').value;
+            
+            if (fromUnit === toUnit) {
+                document.getElementById('length-result').textContent = `${value} ${fromUnit} = ${value} ${toUnit}`;
+                return;
+            }
+            
+            try {
+                const convertedValue = value * lengthConversions[fromUnit][toUnit];
+                document.getElementById('length-result').textContent = 
+                    `${value} ${fromUnit} = ${convertedValue.toFixed(6)} ${toUnit}`;
+            } catch {
+                document.getElementById('length-result').textContent = "Conversion error";
+            }
+        }
+
+        function convertWeight() {
+            const value = parseFloat(document.getElementById('weight-value').value) || 0;
+            const fromUnit = document.getElementById('weight-from').value;
+            const toUnit = document.getElementById('weight-to').value;
+            
+            if (fromUnit === toUnit) {
+                document.getElementById('weight-result').textContent = `${value} ${fromUnit} = ${value} ${toUnit}`;
+                return;
+            }
+            
+            try {
+                const convertedValue = value * weightConversions[fromUnit][toUnit];
+                document.getElementById('weight-result').textContent = 
+                    `${value} ${fromUnit} = ${convertedValue.toFixed(6)} ${toUnit}`;
+            } catch {
+                document.getElementById('weight-result').textContent = "Conversion error";
+            }
+        }
+
+        function convertTemperature() {
+            const value = parseFloat(document.getElementById('temp-value').value) || 0;
+            const fromUnit = document.getElementById('temp-from').value;
+            const toUnit = document.getElementById('temp-to').value;
+            
+            if (fromUnit === toUnit) {
+                document.getElementById('temp-result').textContent = `${value} °${fromUnit.toUpperCase()} = ${value} °${toUnit.toUpperCase()}`;
+                return;
+            }
+            
+            try {
+                let celsius;
+                if (fromUnit === 'f') {
+                    celsius = (value - 32) * 5/9;
+                } else if (fromUnit === 'k') {
+                    celsius = value - 273.15;
+                } else {
+                    celsius = value;
+                }
+                
+                let result;
+                if (toUnit === 'f') {
+                    result = celsius * 9/5 + 32;
+                } else if (toUnit === 'k') {
+                    result = celsius + 273.15;
+                } else {
+                    result = celsius;
+                }
+                
+                document.getElementById('temp-result').textContent = 
+                    `${value} °${fromUnit.toUpperCase()} = ${result.toFixed(2)} °${toUnit.toUpperCase()}`;
+            } catch {
+                document.getElementById('temp-result').textContent = "Conversion error";
+            }
+        }
+
+        // Base Converter functions
+        function convertNumberBase() {
+            const value = document.getElementById('number-value').value.trim();
+            const fromBase = parseInt(document.getElementById('number-from').value);
+            const toBase = parseInt(document.getElementById('number-to').value);
+            
+            if (!value) return showError('number-result', "Please enter a value");
+            
+            try {
+                const decimalValue = parseInt(value, fromBase);
+                if (isNaN(decimalValue)) return showError('number-result', "Invalid input for selected base");
+                
+                const result = decimalValue.toString(toBase).toUpperCase();
+                document.getElementById('number-result').textContent = 
+                    `${value} (base ${fromBase}) = ${result} (base ${toBase})`;
+            } catch {
+                showError('number-result', "Conversion error");
+            }
+        }
+
+        function binaryOperation() {
+            const binary1 = document.getElementById('binary1').value.trim();
+            const binary2 = document.getElementById('binary2').value.trim();
+            const operation = document.getElementById('binary-op').value;
+            
+            if (!binary1 || !binary2) return showError('binary-result', "Please enter both binary numbers");
+            if (!/^[01]+$/.test(binary1) || !/^[01]+$/.test(binary2)) {
+                return showError('binary-result', "Please enter valid binary numbers (0s and 1s only)");
+            }
+            
+            try {
+                const num1 = parseInt(binary1, 2);
+                const num2 = parseInt(binary2, 2);
+                let result;
+                
+                switch (operation) {
+                    case 'and': result = (num1 & num2).toString(2); break;
+                    case 'or': result = (num1 | num2).toString(2); break;
+                    case 'xor': result = (num1 ^ num2).toString(2); break;
+                    case 'add': result = (num1 + num2).toString(2); break;
+                    default: return showError('binary-result', "Invalid operation");
+                }
+                
+                document.getElementById('binary-result').textContent = 
+                    `${binary1} ${operation.toUpperCase()} ${binary2} = ${result}`;
+            } catch {
+                showError('binary-result', "Calculation error");
+            }
+        }
+
+        // Time Calculator functions
+        function addTime() {
+            const value1 = parseFloat(document.getElementById('time-value1').value) || 0;
+            const unit1 = document.getElementById('time-unit1').value;
+            const value2 = parseFloat(document.getElementById('time-value2').value) || 0;
+            const unit2 = document.getElementById('time-unit2').value;
+            
+            const timeFactors = {
+                sec: 1,
+                min: 60,
+                hr: 3600,
+                day: 86400
+            };
+            
+            const seconds1 = value1 * timeFactors[unit1];
+            const seconds2 = value2 * timeFactors[unit2];
+            const totalSeconds = seconds1 + seconds2;
+            
+            let result;
+            if (totalSeconds < 60) {
+                result = `${totalSeconds} seconds`;
+            } else if (totalSeconds < 3600) {
+                result = `${(totalSeconds / 60).toFixed(2)} minutes`;
+            } else if (totalSeconds < 86400) {
+                result = `${(totalSeconds / 3600).toFixed(2)} hours`;
+            } else {
+                result = `${(totalSeconds / 86400).toFixed(2)} days`;
+            }
+            
+            document.getElementById('time-result').textContent = 
+                `${value1} ${unit1} + ${value2} ${unit2} = ${result}`;
+        }
+
+        // Helper functions
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.classList.add('error');
+            return false;
+        }
+
+        // Initialize
+        window.onload = function() {
+            document.getElementById('input').focus();
+            
+            // Add animation to social icons on hover
+            const socialLinks = document.querySelectorAll('.social-links a');
+            socialLinks.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    link.classList.add('animate__rubberBand');
+                });
+                link.addEventListener('mouseleave', () => {
+                    link.classList.remove('animate__rubberBand');
+                });
+            });
+        };
+
+        // Keyboard support
+        document.getElementById('input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') calculate('basic');
+        });
+        document.getElementById('sci-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') calculate('scientific');
+        });
+        document.getElementById('calc-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') calculate('calculus');
+        });
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('.key, .section-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 1000);
+            });
+        });
+
+        // Add theme switcher functionality
+        const themeSwitcher = document.createElement('div');
+        themeSwitcher.className = 'theme-switcher';
+        themeSwitcher.innerHTML = `
+            <button id="light-theme">Light</button>
+            <button id="dark-theme">Dark</button>
+        `;
+        document.body.insertBefore(themeSwitcher, document.querySelector('.calculator-container'));
+
+        document.getElementById('dark-theme').addEventListener('click', () => {
+            document.documentElement.style.setProperty('--background', '#121212');
+            document.documentElement.style.setProperty('--calculator-bg', '#1e1e1e');
+            document.documentElement.style.setProperty('--key-bg', '#2c2c2e');
+            document.documentElement.style.setProperty('--key-hover', '#3a3a3c');
+            document.documentElement.style.setProperty('--text-color', '#ffffff');
+            document.documentElement.style.setProperty('--key-text', '#ffffff');
+            document.documentElement.style.setProperty('--screen-bg', '#2c2c2e');
+            document.documentElement.style.setProperty('--section-bg', '#2c2c2e');
+            document.documentElement.style.setProperty('--tab-bg', '#3a3a3c');
+            document.documentElement.style.setProperty('--footer-bg', '#1e1e1e');
+        });
+
+        document.getElementById('light-theme').addEventListener('click', () => {
+            document.documentElement.style.setProperty('--background', '#f2f2f7');
+            document.documentElement.style.setProperty('--calculator-bg', '#ffffff');
+            document.documentElement.style.setProperty('--key-bg', '#f5f5f5');
+            document.documentElement.style.setProperty('--key-hover', '#e5e5e5');
+            document.documentElement.style.setProperty('--text-color', '#333');
+            document.documentElement.style.setProperty('--key-text', '#333');
+            document.documentElement.style.setProperty('--screen-bg', '#f9f9f9');
+            document.documentElement.style.setProperty('--section-bg', '#f8f8f8');
+            document.documentElement.style.setProperty('--tab-bg', '#e5e5e5');
+            document.documentElement.style.setProperty('--footer-bg', '#2c2c2e');
+        });
+
+        // Add style for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.7);
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                pointer-events: none;
+            }
+            
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+            
+            .theme-switcher {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                display: flex;
+                gap: 10px;
+            }
+            
+            .theme-switcher button {
+                padding: 5px 10px;
+                border: none;
+                border-radius: 4px;
+                background-color: var(--function-key);
+                color: white;
+                cursor: pointer;
+                font-size: 12px;
+            }
+            
+            .theme-switcher button:hover {
+                background-color: #e08500;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
