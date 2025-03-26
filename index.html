@@ -495,99 +495,108 @@ footer img{
         </div>
 
         <!-- Scientific Calculator -->
-        <div class="calculator-section" id="scientific-section">
-            <div class="screen">
-                <input type="text" class="input-field" id="sci-input" placeholder="Enter expression..." autocomplete="off">
-                <div class="result-field" id="sci-result"></div>
-            </div>
+       <!-- Scientific Calculator -->
+<div class="calculator-section" id="scientific-section">
+    <div class="screen">
+        <input type="text" class="input-field" id="sci-input" placeholder="Enter expression..." autocomplete="off">
+        <div class="result-field" id="sci-result"></div>
+    </div>
 
-            <div class="help-panel">
-                <div class="help-title">Scientific Calculator Examples:</div>
-                <div class="help-example">• sin(45 deg) = 0.707</div>
-                <div class="help-example">• log(100) = 2</div>
-                <div class="help-example">• 2^3 = 8</div>
-                <div class="help-example">• sqrt(9) = 3</div>
-            </div>
+    <div class="help-panel">
+        <div class="help-title">Scientific Calculator Examples:</div>
+        <div class="help-example">• sin(45 deg) = 0.707</div>
+        <div class="help-example">• log(100) = 2</div>
+        <div class="help-example">• 2^3 = 8</div>
+        <div class="help-example">• sqrt(9) = 3</div>
+    </div>
 
-            <div class="buttons">
-                <button class="key" onclick="clearInput('scientific')">C</button>
-                <button class="key" onclick="appendToInput('scientific', 'pi')">π</button>
-                <button class="key" onclick="appendToInput('scientific', 'e')">e</button>
-                <button class="key function-key" onclick="calculate('scientific')">=</button>
-                
-                <button class="key" onclick="appendToInput('scientific', 'sin(')">sin</button>
-                <button class="key" onclick="appendToInput('scientific', 'cos(')">cos</button>
-                <button class="key" onclick="appendToInput('scientific', 'tan(')">tan</button>
-                <button class="key function-key" onclick="appendToInput('scientific', '/')">/</button>
-                
-                <button class="key" onclick="appendToInput('scientific', 'asin(')">sin⁻¹</button>
-                <button class="key" onclick="appendToInput('scientific', 'acos(')">cos⁻¹</button>
-                <button class="key" onclick="appendToInput('scientific', 'atan(')">tan⁻¹</button>
-                <button class="key function-key" onclick="appendToInput('scientific', '*')">×</button>
-                
-                <button class="key" onclick="appendToInput('scientific', 'sqrt(')">√</button>
-                <button class="key" onclick="appendToInput('scientific', '^2')">x²</button>
-                <button class="key" onclick="appendToInput('scientific', '^')">x^y</button>
-                <button class="key function-key" onclick="appendToInput('scientific', '-')">-</button>
-                
-                <button class="key" onclick="appendToInput('scientific', 'log(')">log</button>
-                <button class="key" onclick="appendToInput('scientific', 'ln(')">ln</button>
-                <button class="key" onclick="appendToInput('scientific', 'abs(')">|x|</button>
-                <button class="key function-key" onclick="appendToInput('scientific', '+')">+</button>
-                
-                <button class="key" onclick="appendToInput('scientific', '(')">(</button>
-                <button class="key" onclick="appendToInput('scientific', ')')">)</button>
-                <button class="key" onclick="toggleHelp()">?</button>
-                <button class="key" onclick="toggleHistory('scientific')">↺</button>
-            </div>
-        </div>
+    <div class="history-container">
+        <div class="history-list"></div>
+    </div>
+
+    <div class="buttons">
+        <button class="key" onclick="clearInput('scientific')">C</button>
+        <button class="key" onclick="appendToInput('scientific', 'pi')">π</button>
+        <button class="key" onclick="appendToInput('scientific', 'e')">e</button>
+        <button class="key function-key" onclick="calculate('scientific')">=</button>
+        
+        <button class="key" onclick="appendToInput('scientific', 'sin(')">sin</button>
+        <button class="key" onclick="appendToInput('scientific', 'cos(')">cos</button>
+        <button class="key" onclick="appendToInput('scientific', 'tan(')">tan</button>
+        <button class="key function-key" onclick="appendToInput('scientific', '/')">/</button>
+        
+        <button class="key" onclick="appendToInput('scientific', 'asin(')">sin⁻¹</button>
+        <button class="key" onclick="appendToInput('scientific', 'acos(')">cos⁻¹</button>
+        <button class="key" onclick="appendToInput('scientific', 'atan(')">tan⁻¹</button>
+        <button class="key function-key" onclick="appendToInput('scientific', '*')">×</button>
+        
+        <button class="key" onclick="appendToInput('scientific', 'sqrt(')">√</button>
+        <button class="key" onclick="appendToInput('scientific', '^2')">x²</button>
+        <button class="key" onclick="appendToInput('scientific', '^')">x^y</button>
+        <button class="key function-key" onclick="appendToInput('scientific', '-')">-</button>
+        
+        <button class="key" onclick="appendToInput('scientific', 'log(')">log</button>
+        <button class="key" onclick="appendToInput('scientific', 'ln(')">ln</button>
+        <button class="key" onclick="appendToInput('scientific', 'abs(')">|x|</button>
+        <button class="key function-key" onclick="appendToInput('scientific', '+')">+</button>
+        
+        <button class="key" onclick="appendToInput('scientific', '(')">(</button>
+        <button class="key" onclick="appendToInput('scientific', ')')">)</button>
+        <button class="key" onclick="toggleHelp('scientific')">?</button>
+        <button class="key" onclick="toggleHistory('scientific')">↺</button>
+    </div>
+</div>
 
         <!-- Calculus Calculator -->
-        <div class="calculator-section" id="calculus-section">
-            <div class="screen">
-                <input type="text" class="input-field" id="calc-input" placeholder="Enter expression..." autocomplete="off">
-                <div class="result-field" id="calc-result"></div>
-            </div>
+<div class="calculator-section" id="calculus-section">
+    <div class="screen">
+        <input type="text" class="input-field" id="calc-input" placeholder="Enter expression..." autocomplete="off">
+        <div class="result-field" id="calc-result"></div>
+    </div>
 
-            <div class="help-panel">
-                <div class="help-title">Calculus Calculator Examples:</div>
-                <div class="help-example">• derivative('x^2', 'x') = 2*x</div>
-                <div class="help-example">• integrate('x^2', 'x') = 1/3*x^3</div>
-                <div class="help-example">• solve('x^2 - 4 = 0', 'x') = [-2, 2]</div>
-            </div>
+    <div class="help-panel">
+        <div class="help-title">Calculus Calculator Examples:</div>
+        <div class="help-example">• derivative('x^2', 'x') = 2*x</div>
+        <div class="help-example">• integrate('x^2', 'x') = 1/3*x^3</div>
+        <div class="help-example">• solve('x^2 - 4 = 0', 'x') = [-2, 2]</div>
+    </div>
 
-            <div class="buttons">
-                <button class="key" onclick="clearInput('calculus')">C</button>
-                <button class="key" onclick="appendToInput('calculus', 'derivative(')">d/dx</button>
-                <button class="key" onclick="appendToInput('calculus', 'integrate(')">∫</button>
-                <button class="key function-key" onclick="calculate('calculus')">=</button>
-                
-                <button class="key" onclick="appendToInput('calculus', 'solve(')">solve</button>
-                <button class="key" onclick="appendToInput('calculus', 'limit(')">limit</button>
-                <button class="key" onclick="appendToInput('calculus', '(')">(</button>
-                <button class="key" onclick="appendToInput('calculus', ')')">)</button>
-                
-                <button class="key" onclick="appendToInput('calculus', '7')">7</button>
-                <button class="key" onclick="appendToInput('calculus', '8')">8</button>
-                <button class="key" onclick="appendToInput('calculus', '9')">9</button>
-                <button class="key function-key" onclick="appendToInput('calculus', '*')">×</button>
-                
-                <button class="key" onclick="appendToInput('calculus', '4')">4</button>
-                <button class="key" onclick="appendToInput('calculus', '5')">5</button>
-                <button class="key" onclick="appendToInput('calculus', '6')">6</button>
-                <button class="key function-key" onclick="appendToInput('calculus', '-')">-</button>
-                
-                <button class="key" onclick="appendToInput('calculus', '1')">1</button>
-                <button class="key" onclick="appendToInput('calculus', '2')">2</button>
-                <button class="key" onclick="appendToInput('calculus', '3')">3</button>
-                <button class="key function-key" onclick="appendToInput('calculus', '+')">+</button>
-                
-                <button class="key" onclick="appendToInput('calculus', 'x')">x</button>
-                <button class="key" onclick="appendToInput('calculus', '0')">0</button>
-                <button class="key" onclick="appendToInput('calculus', ',')">,</button>
-                <button class="key function-key" onclick="appendToInput('calculus', '/')">/</button>
-            </div>
-        </div>
+    <div class="history-container">
+        <div class="history-list"></div>
+    </div>
+
+    <div class="buttons">
+        <button class="key" onclick="clearInput('calculus')">C</button>
+        <button class="key" onclick="appendToInput('calculus', 'derivative(')">d/dx</button>
+        <button class="key" onclick="appendToInput('calculus', 'integrate(')">∫</button>
+        <button class="key function-key" onclick="calculate('calculus')">=</button>
+        
+        <button class="key" onclick="appendToInput('calculus', 'solve(')">solve</button>
+        <button class="key" onclick="appendToInput('calculus', 'limit(')">limit</button>
+        <button class="key" onclick="appendToInput('calculus', '(')">(</button>
+        <button class="key" onclick="appendToInput('calculus', ')')">)</button>
+        
+        <button class="key" onclick="appendToInput('calculus', '7')">7</button>
+        <button class="key" onclick="appendToInput('calculus', '8')">8</button>
+        <button class="key" onclick="appendToInput('calculus', '9')">9</button>
+        <button class="key function-key" onclick="appendToInput('calculus', '*')">×</button>
+        
+        <button class="key" onclick="appendToInput('calculus', '4')">4</button>
+        <button class="key" onclick="appendToInput('calculus', '5')">5</button>
+        <button class="key" onclick="appendToInput('calculus', '6')">6</button>
+        <button class="key function-key" onclick="appendToInput('calculus', '-')">-</button>
+        
+        <button class="key" onclick="appendToInput('calculus', '1')">1</button>
+        <button class="key" onclick="appendToInput('calculus', '2')">2</button>
+        <button class="key" onclick="appendToInput('calculus', '3')">3</button>
+        <button class="key function-key" onclick="appendToInput('calculus', '+')">+</button>
+        
+        <button class="key" onclick="appendToInput('calculus', 'x')">x</button>
+        <button class="key" onclick="appendToInput('calculus', '0')">0</button>
+        <button class="key" onclick="appendToInput('calculus', ',')">,</button>
+        <button class="key function-key" onclick="appendToInput('calculus', '/')">/</button>
+    </div>
+</div>
 
         <!-- Finance Calculator -->
         <div class="calculator-section" id="finance-section">
@@ -791,6 +800,74 @@ footer img{
     </footer>
 
     <script>
+        // Calculator Functions
+function appendToInput(type, value) {
+    const inputId = `${type === 'basic' ? '' : type + '-'}input`;
+    const inputElement = document.getElementById(inputId);
+    if (inputElement) {
+        inputElement.value += value;
+        inputElement.focus();
+    } else {
+        console.error(`Input element with ID ${inputId} not found`);
+    }
+}
+
+function clearInput(type) {
+    const inputId = `${type === 'basic' ? '' : type + '-'}input`;
+    const resultId = `${type === 'basic' ? '' : type + '-'}result`;
+    const inputElement = document.getElementById(inputId);
+    const resultElement = document.getElementById(resultId);
+    if (inputElement && resultElement) {
+        inputElement.value = '';
+        resultElement.textContent = '';
+        resultElement.classList.remove('error');
+        inputElement.focus();
+    } else {
+        console.error(`Elements not found: ${inputId} or ${resultId}`);
+    }
+}
+
+function calculate(type) {
+    const inputId = `${type === 'basic' ? '' : type + '-'}input`;
+    const resultId = `${type === 'basic' ? '' : type + '-'}result`;
+    const inputElement = document.getElementById(inputId);
+    const resultElement = document.getElementById(resultId);
+    
+    if (!inputElement || !resultElement) {
+        console.error(`Elements not found: ${inputId} or ${resultId}`);
+        return;
+    }
+    
+    const expression = inputElement.value.trim();
+    if (!expression) return;
+    
+    try {
+        let result;
+        if (type === 'calculus') {
+            result = handleCalculusOperations(expression);
+        } else {
+            result = math.evaluate(expression);
+        }
+        
+        resultElement.textContent = result;
+        resultElement.classList.remove('error');
+        addToHistory(type, expression, result);
+    } catch (error) {
+        resultElement.textContent = 'Error: ' + (error.message || 'Invalid expression');
+        resultElement.classList.add('error');
+    }
+}
+
+// Updated toggleHelp function to work with specific sections
+function toggleHelp(type) {
+    const section = document.getElementById(`${type}-section`);
+    if (section) {
+        const helpPanel = section.querySelector('.help-panel');
+        if (helpPanel) {
+            helpPanel.classList.toggle('show');
+        }
+    }
+}
         // Exchange rates (simplified - in a real app you'd fetch these from an API)
         const exchangeRates = {
             USD: { EUR: 0.93, GBP: 0.79, JPY: 151.36, CAD: 1.37, AUD: 1.52, CNY: 7.24, INR: 83.29 },
